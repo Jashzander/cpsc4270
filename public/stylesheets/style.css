@@ -1,0 +1,40 @@
+body {
+  font-family: Arial, sans-serif;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  line-height: 1.6;
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+}
+
+h2 {
+  color: #444;
+  margin-top: 30px;
+}
+
+.endpoint {
+  margin: 10px 0;
+  padding: 10px;
+  background-color: #f5f5f5;
+}
+
+.method {
+  font-weight: bold;
+  color: #666;
+}
+
+.path {
+  font-family: monospace;
+  background-color: #eee;
+  padding: 2px 5px;
+}
+
+footer {
+  text-align: center;
+  margin-top: 40px;
+  color: #666;
+}

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music API</title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+<body>
+    <h1>Music API</h1>
+    
+    <p>A simple API for managing music albums, artists, and concerts.</p>
+    
+    <h2>Albums</h2>
+    <div class="endpoint">
+        <div><span class="method">GET</span> <span class="path">/albums</span> - List all albums</div>
+        <div><span class="method">GET</span> <span class="path">/albums/:id</span> - Get album details</div>
+        <div><span class="method">POST</span> <span class="path">/albums</span> - Create new album</div>
+        <div><span class="method">DELETE</span> <span class="path">/albums/:id</span> - Delete album</div>
+    </div>
+
+    <h2>Artists</h2>
+    <div class="endpoint">
+        <div><span class="method">GET</span> <span class="path">/artists</span> - List all artists</div>
+        <div><span class="method">POST</span> <span class="path">/artists</span> - Add new artist</div>
+        <div><span class="method">PUT</span> <span class="path">/artists/:id</span> - Update artist</div>
+    </div>
+
+    <h2>Concerts</h2>
+    <div class="endpoint">
+        <div><span class="method">GET</span> <span class="path">/concerts?minDate=YYYY-MM-DD&maxDate=YYYY-MM-DD</span> - List all concerts within a date or time range</div>
+        <div><span class="method">PATCH</span> <span class="path">/concerts/:id</span> - Update concert date or time</div>
+    </div>
+
+    <h2>Tracks</h2>
+    <div class="endpoint">
+        <div><span class="method">GET</span> <span class="path">/albums/:id/tracks</span> - List album tracks</div>
+        <div><span class="method">POST</span> <span class="path">/albums/:id/tracks</span> - Add track to album</div>
+        <div><span class="method">DELETE</span> <span class="path">/albums/:albumId/tracks/:trackNumber</span> - Remove track</div>
+    </div>
+
+    <footer>
+        <p>CPSC 4720 - HW1</p>
+    </footer>
+</body>
+</html>
