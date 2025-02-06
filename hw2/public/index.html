@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playlists and Tags API</title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+<body>
+    <nav class="nav-bar">
+        <div class="nav-brand">Playlists and Tags API</div>
+        <div class="nav-links">
+            <span id="userEmail"></span>
+            <button id="logoutButton" class="nav-button">Logout</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>Welcome to Playlists and Tags API</h1>
+        
+        <div id="authSection">
+            <p>Please <a href="/login.html">login</a> or <a href="/signup.html">sign up</a> to continue.</p>
+        </div>
+
+        <div id="mainContent" style="display: none;">
+            <h2>API Endpoints</h2>
+            
+            <h3>Playlists</h3>
+            <div class="endpoint">
+                <div><span class="method">GET</span> <span class="path">/playlists/public</span> - List all public playlists</div>
+                <div><span class="method">GET</span> <span class="path">/playlists/my-playlists</span> - List all your playlists</div>
+                <div><span class="method">POST</span> <span class="path">/playlists</span> - Create a new playlist (requires name & description)</div>
+                <div><span class="method">PATCH</span> <span class="path">/playlists/:id/privacy</span> - Update playlist privacy</div>
+                <div><span class="method">POST</span> <span class="path">/playlists/:id/tracks</span> - Add tracks to playlist</div>
+                <div><span class="method">DELETE</span> <span class="path">/playlists/:id/tracks/:trackIndex</span> - Remove track from playlist</div>
+                <div><span class="method">PATCH</span> <span class="path">/playlists/:id/reorder</span> - Reorder tracks in playlist</div>
+            </div>
+            
+            <h3>Tags</h3>
+            <div class="endpoint">
+                <div><span class="method">POST</span> <span class="path">/playlists/tags</span> - Add a tag to a track</div>
+                <div><span class="method">POST</span> <span class="path">/playlists/tags/:id/upvote</span> - Upvote a tag</div>
+                <div><span class="method">POST</span> <span class="path">/playlists/tags/:id/downvote</span> - Downvote a tag</div>
+                <div><span class="method">GET</span> <span class="path">/playlists/tracks/by-tag/:tag</span> - Get tracks by tag (only if upvotes > downvotes)</div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>CPSC 4720 - HW2</p>
+    </footer>
+
+    <script src="/javascripts/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('token');
+            const authSection = document.getElementById('authSection');
+            const mainContent = document.getElementById('mainContent');
+            const navBrand = document.querySelector('.nav-brand');
+            const logoutButton = document.getElementById('logoutButton');
+
+            if (token) {
+                const decodedToken = parseJwt(token);
+                if (decodedToken && decodedToken.name) {
+                    navBrand.textContent = `Welcome, ${decodedToken.name}`;
+                } else if (decodedToken && decodedToken.username) {
+                    navBrand.textContent = `Welcome, ${decodedToken.username}`;
+                }
+                authSection.style.display = 'none';
+                mainContent.style.display = 'block';
+                logoutButton.style.display = 'inline-block';
+            } else {
+                navBrand.textContent = 'Playlists and Tags API';
+                authSection.style.display = 'block';
+                mainContent.style.display = 'none';
+                logoutButton.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
