@@ -1,0 +1,324 @@
+openapi: 3.0.0
+info:
+  title: Music API
+  version: 1.0.0
+paths:
+  /albums:
+    post:
+      operationId: createAlbum
+      summary: Add a new album
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Album'
+      responses:
+        '201':
+          description: Album created successfully
+        '400':
+          description: Missing required fields
+    get:
+      operationId: getAllAlbums
+      summary: List all albums
+      responses:
+        '200':
+          description: A list of Albums
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Album'
+  /albums/{albumId}:
+    get:
+      operationId: getAlbum
+      summary: Get the details of a specific album
+      parameters:
+        - name: albumId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Album details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Album'
+    delete:
+      operationId: deleteAlbum
+      summary: Delete a specific album (and all of its associated tracks)
+      parameters:
+        - name: albumId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Album deleted
+  /albums/{albumId}/tracks:
+    post:
+      operationId: addTrackToAlbum
+      summary: Add a new track to a specific album
+      parameters:
+        - name: albumId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Track'
+      responses:
+        '201':
+          description: Track added
+    get:
+      operationId: getAlbumTracks
+      summary: Get the details of all tracks for a specific album
+      parameters:
+        - name: albumId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of tracks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Track'
+  /albums/{albumId}/tracks/{trackId}:
+    delete:
+      operationId: removeTrackFromAlbum
+      summary: Delete a specific track
+      parameters:
+        - name: albumId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: trackId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Track deleted
+  /artists:
+    post:
+      operationId: createArtist
+      summary: Add a new artist
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Artist'
+      responses:
+        '201':
+          description: Artist created
+    get:
+      operationId: getAllArtists
+      summary: List all artists
+      responses:
+        '200':
+          description: A list of artists
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Artist'
+  /artists/{artistId}:
+    patch:
+      operationId: updateArtist
+      summary: Update a specific artist's name, biography, and/or social media links
+      parameters:
+        - name: artistId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Artist'
+      responses:
+        '200':
+          description: Artist updated
+  /concerts:
+    get:
+      operationId: getAllConcerts
+      summary: List all concerts within a time range
+      parameters:
+        - name: startTime
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - name: endTime
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: A list of concerts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Concert'
+  /concerts/{concertId}/start-time:
+    put:
+      operationId: updateConcert
+      summary: Change the start date/time of a specific concert
+      parameters:
+        - name: concertId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                startTime:
+                  type: string
+                  format: date-time
+      responses:
+        '200':
+          description: Concert updated
+components:
+  schemas:
+    NewAlbumRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        yearReleased:
+          type: integer
+        genre:
+          type: string
+      required:
+        - name
+        - yearReleased
+        - genre
+    Album:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        yearReleased:
+          type: integer
+        genre:
+          type: string
+      required:
+        - id
+        - name
+        - yearReleased
+        - genre
+    NewTrackRequest:
+      type: object
+      properties:
+        title:
+          type: string
+        duration:
+          type: string
+        primaryArtist:
+          type: string
+      required:
+        - title
+        - duration
+        - primaryArtist
+    Track:
+      type: object
+      properties:
+        albumId:
+          type: integer
+        trackNumber:
+          type: integer
+        title:
+          type: string
+        duration:
+          type: string
+        primaryArtist:
+          type: string
+      required:
+        - albumId
+        - trackNumber
+        - title
+        - duration
+        - primaryArtist
+    NewArtistRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        biography:
+          type: string
+        socialMediaLinks:
+          type: array
+          items:
+            type: string
+      required:
+        - name
+        - biography
+    Artist:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        biography:
+          type: string
+        socialMediaLinks:
+          type: array
+          items:
+            type: string
+      required:
+        - id
+        - name
+        - biography
+    Concert:
+      type: object
+      properties:
+        id:
+          type: integer
+        startTime:
+          type: string
+          format: date-time
+        duration:
+          type: string
+        primaryArtist:
+          type: string
+        additionalArtists:
+          type: array
+          items:
+            type: string
+      required:
+        - id
+        - startTime
+        - duration
+        - primaryArtist

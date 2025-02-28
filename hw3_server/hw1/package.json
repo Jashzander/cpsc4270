@@ -1,0 +1,25 @@
+{
+  "name": "cpsc4720_hw1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.mjs"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "debug": "^4.4.0",
+    "express": "^4.21.2",
+    "morgan": "^1.10.0",
+    "swagger-ui-express": "^5.0.1",
+    "yaml": "^2.7.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  },
+  "scarfSettings": {
+    "enabled": false
+  }
+}
