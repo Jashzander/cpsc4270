@@ -1,0 +1,312 @@
+/* Base styles */
+:root {
+  --primary-color: #1db954;
+  --secondary-color: #191414;
+  --text-color: #333;
+  --light-gray: #f5f5f5;
+  --border-color: #ddd;
+  --error-color: #e74c3c;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  color: var(--text-color);
+  background-color: #fff;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Header */
+.header {
+  background-color: var(--secondary-color);
+  color: white;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo a {
+  color: var(--primary-color);
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.nav-links {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.nav-links a, .nav-links button {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.nav-links button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px 10px;
+}
+
+.nav-links button:hover {
+  text-decoration: underline;
+}
+
+/* Forms */
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.form-group input[type="text"],
+.form-group input[type="password"] {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.form-group.checkbox {
+  display: flex;
+  align-items: center;
+}
+
+.form-group.checkbox label {
+  margin-bottom: 0;
+  margin-left: 10px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Playlists */
+.playlist-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.new-playlist-btn {
+  display: inline-block;
+  background-color: var(--primary-color);
+  color: white;
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+}
+
+.playlists {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.playlist-item {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 15px;
+  background-color: var(--light-gray);
+}
+
+.playlist-info {
+  margin-bottom: 15px;
+}
+
+.playlist-status {
+  display: inline-block;
+  margin-top: 5px;
+  padding: 3px 8px;
+  background-color: var(--secondary-color);
+  color: white;
+  border-radius: 4px;
+  font-size: 0.8rem;
+}
+
+.edit-playlist-btn {
+  display: inline-block;
+  background-color: var(--primary-color);
+  color: white;
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+/* Edit Playlist Page */
+.edit-playlist-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+
+@media (max-width: 768px) {
+  .edit-playlist-content {
+    grid-template-columns: 1fr;
+  }
+}
+
+.tracks-container {
+  margin: 20px 0;
+}
+
+.tracks-list {
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+.playlist-track-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.playlist-track-item:last-child {
+  border-bottom: none;
+}
+
+.track-actions {
+  display: flex;
+  gap: 5px;
+}
+
+/* Albums */
+.album-item {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 20px;
+  background-color: var(--light-gray);
+}
+
+.album-info {
+  margin-bottom: 15px;
+}
+
+.album-track-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.album-track-item:last-child {
+  border-bottom: none;
+}
+
+.track-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.track-number {
+  min-width: 25px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.track-info {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  gap: 10px;
+}
+
+.track-duration {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.track-added {
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+.add-track-btn {
+  font-size: 0.8rem;
+  padding: 4px 8px;
+}
+
+.remove-track {
+  background-color: var(--error-color);
+}
+
+/* Login Page */
+.login-container {
+  max-width: 400px;
+  margin: 50px auto;
+  padding: 20px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background-color: var(--light-gray);
+}
+
+.login-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Error Messages */
+.error {
+  color: var(--error-color);
+  background-color: rgba(231, 76, 60, 0.1);
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+}

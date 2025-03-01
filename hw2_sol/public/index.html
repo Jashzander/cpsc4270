@@ -1,0 +1,55 @@
+<html>
+
+<head>
+  <title>Pandify</title>
+  <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+
+<body>
+  <h1>Pandify</h1>
+  <section>
+    <h2>Playlists</h2>
+    <button id="create-playlist">Create</button>
+    <button id="add-track">Add track</button>
+    <button id="reorder-tracks">Reorder tracks</button>
+    <section>
+      <h3>Playlists</h3>
+      <ul id="playlists-list">
+      </ul>
+      <button id="playlist-refresh">🔃</button>
+      <div>Selected playlist: <span id="selected-playlist"></span></div>
+    </section>
+  </section>
+  <section>
+    <h2>Tags</h2>
+    <button id="add-tag">Add tag</button>
+    <div>
+      <label>
+        Track id
+        <input type="text" id="tag-search-track-id" />
+      </label>
+    </div>
+    <div>
+      <button id="tag-search">Get tags</button>
+      <ul id="tags-list">
+      </ul>
+    </div>
+    <section>
+      <h3>Recommended tracks</h3>
+      <label>
+        Tag to match:
+        <input type="text" id="recommended-tracks-search" />
+      </label>
+      <ul id="recommended-tracks-list">
+      </ul>
+      <button id="recommended-tracks-refresh">🔃</button>
+    </section>
+  </section>
+  <section>
+    <h2>Results</h2>
+    <ul id="result-list">
+    </ul>
+  </section>
+  <script src="/javascripts/main.js"></script>
+</body>
+</html>
