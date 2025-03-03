@@ -31,7 +31,6 @@ const Header = () => {
                 <span>Welcome, {user.name || user.email || 'User'}</span>
               </span>
             )}
-            <Link to="/">My Playlists</Link>
             <button onClick={handleLogout} className="logout-btn">Logout</button>
           </div>
         ) : (

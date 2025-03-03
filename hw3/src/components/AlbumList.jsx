@@ -166,6 +166,7 @@ const AlbumList = ({ currentPlaylist }) => {
 
   return (
     <div className="album-list">
+      
       <h3>Available Albums and Tracks</h3>
       
       {addError && <div className="error">{addError}</div>}

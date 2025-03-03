@@ -64,12 +64,13 @@ export const usePlaylists = () => {
               tracks: Array.isArray(playlist.tracks) ? playlist.tracks.map(trackId => {
                 // If the track is just an ID string, convert it to an object
                 if (typeof trackId === 'string') {
+                  const trackData = data.find(track => track.id === trackId); // Find the track data by ID
                   return {
                     id: trackId,
                     _id: trackId,
-                    title: `Track ${trackId}`, // Placeholder title
-                    number: 0, // Placeholder number
-                    duration: '0:00' // Placeholder duration
+                    title: trackData ? trackData.title : `Track ID: ${trackId}`, // Use title from trackData or fallback
+                    number: trackData ? trackData.trackNumber : 1, // Use trackNumber from trackData or fallback
+                    duration: trackData ? trackData.duration : '0:00' // Use duration from trackData or fallback
                   };
                 }
                 return trackId;

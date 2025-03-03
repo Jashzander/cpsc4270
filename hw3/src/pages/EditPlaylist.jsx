@@ -101,7 +101,7 @@ const EditPlaylist = () => {
 
   return (
     <div className="edit-playlist-page">
-      <h2>Edit Playlist: {playlist.name}</h2>
+      <h2>Edit Playlist</h2>
       <div className="edit-playlist-content">
         <EditPlaylistForm playlist={playlist} />
         <AlbumList currentPlaylist={playlist} />

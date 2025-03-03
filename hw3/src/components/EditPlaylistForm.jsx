@@ -305,6 +305,7 @@ const EditPlaylistForm = ({ playlist }) => {
             value={playlistData.name}
             onChange={handleChange}
             required
+            readOnly
           />
         </div>
         
@@ -367,9 +368,12 @@ const EditPlaylistForm = ({ playlist }) => {
             onClick={() => navigate('/')}
             disabled={isSubmitting}
           >
-            Cancel
+            Back
           </button>
+          
         </div>
+        <p>Note:</p>
+        <p>Tracks get automatically added to playlist no need to save, for everything else please click on Save Changes</p>
       </form>
     </div>
   );

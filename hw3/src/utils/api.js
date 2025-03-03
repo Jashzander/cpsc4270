@@ -314,6 +314,7 @@ export const updatePlaylist = async (playlistId, playlistData) => {
       body: JSON.stringify(normalizedData.isPublic)
     });
     
+    
     // Then, handle track updates individually
     console.log('Updating playlist tracks...');
     
@@ -342,19 +343,10 @@ export const updatePlaylist = async (playlistId, playlistData) => {
     // Add new tracks
     for (const trackId of tracksToAdd) {
       console.log(`Adding track ${trackId} to playlist ${playlistId}`);
-      const response = await fetchWithAuth(`${API_BASE_URL}/playlists/${playlistId}/tracks`, {
+      await fetchWithAuth(`${API_BASE_URL}/playlists/${playlistId}/tracks`, {
         method: 'POST',
         body: JSON.stringify({ trackId })
       });
-      
-      // Check the response status
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error(`Failed to add track ${trackId}: ${response.status} ${errorText}`);
-        throw new Error(`Failed to add track: ${response.status} ${errorText}`);
-      } else {
-        console.log(`Track ${trackId} added successfully to playlist ${playlistId}`);
-      }
     }
     
     // Remove tracks
