@@ -2,6 +2,12 @@
 import { Link } from 'react-router-dom';
 
 const PlaylistItem = ({ playlist }) => {
+  // Ensure playlist ID is valid before rendering the link
+  const playlistId = playlist?.id || playlist?._id;
+  if (!playlistId) {
+    console.error('Invalid playlist ID:', playlist);
+  }
+
   return (
     <div className="playlist-item">
       <div className="playlist-info">
@@ -11,9 +17,15 @@ const PlaylistItem = ({ playlist }) => {
         </p>
       </div>
       <div className="playlist-actions">
-        <Link to={`/playlists/${playlist.id}/edit`} className="edit-playlist-btn">
-          Edit Playlist
-        </Link>
+        {playlistId ? (
+          <Link to={`/playlists/${playlistId}/edit`} className="edit-playlist-btn">
+            Edit Playlist
+          </Link>
+        ) : (
+          <button className="edit-playlist-btn disabled" disabled>
+            Edit Playlist
+          </button>
+        )}
       </div>
     </div>
   );

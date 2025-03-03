@@ -1,15 +1,14 @@
 // src/components/Header.jsx
 import { useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 
 const Header = () => {
   const { isAuthenticated, logout, user } = useContext(AuthContext);
-  const navigate = useNavigate();
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    // Auth0 will handle the redirect
   };
 
   return (
@@ -20,9 +19,20 @@ const Header = () => {
       <nav>
         {isAuthenticated ? (
           <div className="nav-links">
-            <span>Welcome, {user?.username || 'User'}</span>
+            {user && (
+              <span className="user-info">
+                {user.picture && (
+                  <img 
+                    src={user.picture} 
+                    alt={user.name || 'User'} 
+                    className="user-avatar"
+                  />
+                )}
+                <span>Welcome, {user.name || user.email || 'User'}</span>
+              </span>
+            )}
             <Link to="/">My Playlists</Link>
-            <button onClick={handleLogout}>Logout</button>
+            <button onClick={handleLogout} className="logout-btn">Logout</button>
           </div>
         ) : (
           <Link to="/login">Login</Link>

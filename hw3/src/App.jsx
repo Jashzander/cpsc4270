@@ -8,18 +8,33 @@ import Login from './pages/Login';
 import NewPlaylist from './pages/NewPlaylist';
 import EditPlaylist from './pages/EditPlaylist';
 import Header from './components/Header';
+import LoadingSpinner from './components/LoadingSpinner';
 import './index.css';
+import { useParams } from 'react-router-dom';
 
 // Protected route component
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, isLoading } = useContext(AuthContext);
   
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <LoadingSpinner />;
   }
   
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
+  }
+  
+  return children;
+};
+
+// Validate ID parameter
+const ValidateIdRoute = ({ children }) => {
+  const { id } = useParams();
+  
+  // If ID is undefined or not valid, redirect to home
+  if (!id || id === 'undefined' || id === 'null') {
+    console.error('Invalid route parameter ID:', id);
+    return <Navigate to="/" replace />;
   }
   
   return children;
@@ -54,10 +69,14 @@ function App() {
                 path="/playlists/:id/edit" 
                 element={
                   <ProtectedRoute>
-                    <EditPlaylist />
+                    <ValidateIdRoute>
+                      <EditPlaylist />
+                    </ValidateIdRoute>
                   </ProtectedRoute>
                 } 
               />
+              {/* Catch-all route - redirect to home */}
+              <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </main>
         </div>

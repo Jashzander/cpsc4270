@@ -9,6 +9,7 @@ const NewPlaylistForm = () => {
     isPublic: false
   });
   const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { addPlaylist } = usePlaylists();
   const navigate = useNavigate();
 
@@ -28,15 +29,28 @@ const NewPlaylistForm = () => {
       return;
     }
     
+    setIsSubmitting(true);
+    setError('');
+    
     try {
-      await addPlaylist({
+      console.log('Submitting new playlist:', {
         name: playlistData.name,
         isPublic: playlistData.isPublic,
         tracks: []
       });
+      
+      const newPlaylist = await addPlaylist({
+        name: playlistData.name,
+        isPublic: playlistData.isPublic,
+        tracks: []
+      });
+      
+      console.log('Playlist created successfully:', newPlaylist);
       navigate('/');
-    } catch {
-      setError('Failed to create playlist');
+    } catch (err) {
+      console.error('Error creating playlist:', err);
+      setError('Failed to create playlist. Please try again.');
+      setIsSubmitting(false);
     }
   };
 
@@ -69,8 +83,14 @@ const NewPlaylistForm = () => {
       </div>
       
       <div className="form-actions">
-        <button type="submit">Create Playlist</button>
-        <button type="button" onClick={() => navigate('/')}>
+        <button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? 'Creating...' : 'Create Playlist'}
+        </button>
+        <button 
+          type="button" 
+          onClick={() => navigate('/')}
+          disabled={isSubmitting}
+        >
           Cancel
         </button>
       </div>

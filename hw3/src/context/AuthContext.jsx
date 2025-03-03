@@ -1,48 +1,48 @@
 // src/context/AuthContext.jsx
 import { createContext, useState, useEffect } from 'react';
-import { checkAuth, login, logout } from '../utils/api';
+import { useAuth0 } from '@auth0/auth0-react';
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [user, setUser] = useState(null);
+  const { 
+    isAuthenticated, 
+    isLoading, 
+    user, 
+    loginWithRedirect, 
+    logout: auth0Logout,
+    getAccessTokenSilently 
+  } = useAuth0();
+  
+  const [token, setToken] = useState(null);
 
   useEffect(() => {
-    const verifyAuth = async () => {
-      const authenticated = await checkAuth();
-      setIsAuthenticated(authenticated);
-      setIsLoading(false);
+    const getToken = async () => {
+      if (isAuthenticated) {
+        try {
+          const accessToken = await getAccessTokenSilently();
+          setToken(accessToken);
+          localStorage.setItem('authToken', accessToken);
+        } catch (error) {
+          console.error('Error getting access token:', error);
+        }
+      }
     };
 
-    verifyAuth();
-  }, []);
-
-  const handleLogin = async (credentials) => {
-    try {
-      const userData = await login(credentials);
-      setUser(userData.user);
-      setIsAuthenticated(true);
-      return true;
-    } catch (error) {
-      console.error(error); // Now the error is used
-      setIsAuthenticated(false);
-      return false;
-    }
-  };
+    getToken();
+  }, [isAuthenticated, getAccessTokenSilently]);
 
   const handleLogout = () => {
-    logout();
-    setUser(null);
-    setIsAuthenticated(false);
+    localStorage.removeItem('authToken');
+    auth0Logout({ returnTo: window.location.origin });
   };
 
   const value = {
     isAuthenticated,
     isLoading,
     user,
-    login: handleLogin,
+    token,
+    login: loginWithRedirect,
     logout: handleLogout
   };
 
