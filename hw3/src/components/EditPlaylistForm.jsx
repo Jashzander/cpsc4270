@@ -29,7 +29,8 @@ const EditPlaylistForm = ({ playlist }) => {
           album.tracks.map(track => ({
             ...track,
             albumName: album.name,
-            albumId: album.id
+            albumId: album.id,
+            originalNumber: track.number || track.trackNumber || 0 // Store the original track number
           }))
         );
         setAllTracks(tracks);
@@ -73,11 +74,21 @@ const EditPlaylistForm = ({ playlist }) => {
     return duration || '0:00';
   };
 
+  // Helper function to assign sequential playlist numbers to tracks
+  const assignSequentialNumbers = (tracks) => {
+    return tracks.map((track, index) => ({
+      ...track,
+      playlistNumber: index + 1, // Sequential number starting from 1
+      // Keep the original number from the album
+      originalNumber: track.originalNumber || track.number || track.trackNumber || 0
+    }));
+  };
+
   // Update form data when playlist prop changes
   useEffect(() => {
     if (playlist) {
       // Ensure tracks are properly formatted for display
-      const formattedTracks = (playlist.tracks || []).map(track => {
+      let formattedTracks = (playlist.tracks || []).map(track => {
         // If track is already an object with all required fields, use it
         if (typeof track === 'object' && track.id) {
           // Find complete track info from allTracks if available
@@ -87,7 +98,9 @@ const EditPlaylistForm = ({ playlist }) => {
             return {
               ...completeTrack,
               id: track.id || track._id,
-              _id: track._id || track.id
+              _id: track._id || track.id,
+              // Store the original album track number
+              originalNumber: completeTrack.number || completeTrack.trackNumber || track.number || track.trackNumber || 0
             };
           }
           
@@ -97,11 +110,12 @@ const EditPlaylistForm = ({ playlist }) => {
             title: track.title || track.name || `Track ${track.id}`,
             name: track.name || track.title || `Track ${track.id}`,
             duration: formatDuration(track.duration),
-            number: track.number || track.trackNumber || 0,
+            originalNumber: track.number || track.trackNumber || 0,
             id: track.id || track._id,
             _id: track._id || track.id
           };
         }
+        
         // If track is just an ID string, convert it to an object
         // Try to find complete track info from allTracks
         const completeTrack = allTracks.find(t => t.id === track || t._id === track);
@@ -110,7 +124,8 @@ const EditPlaylistForm = ({ playlist }) => {
           return {
             ...completeTrack,
             id: track,
-            _id: track
+            _id: track,
+            originalNumber: completeTrack.number || completeTrack.trackNumber || 0
           };
         }
         
@@ -119,10 +134,13 @@ const EditPlaylistForm = ({ playlist }) => {
           _id: track,
           title: `Track ${track}`,
           name: `Track ${track}`,
-          number: 0,
+          originalNumber: 0,
           duration: '0:00'
         };
       });
+
+      // Assign sequential numbers to tracks in the playlist
+      formattedTracks = assignSequentialNumbers(formattedTracks);
 
       // Log the isPublic value from the playlist prop
       console.log('Initializing form with isPublic value:', playlist.isPublic);
@@ -183,7 +201,7 @@ const EditPlaylistForm = ({ playlist }) => {
       };
       
       // Ensure tracks have proper format for the backend
-      normalizedData.tracks = normalizedData.tracks.map(track => {
+      normalizedData.tracks = normalizedData.tracks.map((track, index) => {
         // If track is already an object, ensure it has an id and preserve all track details
         if (typeof track === 'object') {
           // Find complete track info from allTracks if available
@@ -197,7 +215,9 @@ const EditPlaylistForm = ({ playlist }) => {
               title: completeTrack.title || completeTrack.name || track.title || track.name || `Track ${track.id || track._id}`,
               name: completeTrack.name || completeTrack.title || track.name || track.title || `Track ${track.id || track._id}`,
               duration: completeTrack.duration || track.duration || '0:00',
-              number: completeTrack.number || completeTrack.trackNumber || track.number || track.trackNumber || 0
+              number: index + 1, // Sequential number based on position
+              originalNumber: completeTrack.originalNumber || completeTrack.number || completeTrack.trackNumber || track.originalNumber || track.number || 0,
+              playlistNumber: index + 1 // Explicitly track the playlist position
             };
           }
           
@@ -208,9 +228,12 @@ const EditPlaylistForm = ({ playlist }) => {
             title: track.title || track.name || `Track ${track.id || track._id}`,
             name: track.name || track.title || `Track ${track.id || track._id}`,
             duration: formatDuration(track.duration),
-            number: track.number || track.trackNumber || 0
+            number: index + 1, // Sequential number based on position
+            originalNumber: track.originalNumber || track.number || track.trackNumber || 0,
+            playlistNumber: index + 1 // Explicitly track the playlist position
           };
         }
+        
         // If track is just an ID string, convert it to an object
         // Try to find complete track info from allTracks
         const completeTrack = allTracks.find(t => t.id === track || t._id === track);
@@ -219,7 +242,10 @@ const EditPlaylistForm = ({ playlist }) => {
           return {
             ...completeTrack,
             id: track,
-            _id: track
+            _id: track,
+            number: index + 1, // Sequential number based on position
+            originalNumber: completeTrack.number || completeTrack.trackNumber || 0,
+            playlistNumber: index + 1 // Explicitly track the playlist position
           };
         }
         
@@ -228,7 +254,9 @@ const EditPlaylistForm = ({ playlist }) => {
           _id: track,
           title: `Track ${track}`,
           name: `Track ${track}`,
-          number: 0,
+          number: index + 1, // Sequential number based on position
+          originalNumber: 0,
+          playlistNumber: index + 1, // Explicitly track the playlist position
           duration: '0:00'
         };
       });
@@ -240,7 +268,6 @@ const EditPlaylistForm = ({ playlist }) => {
       const updatedPlaylist = await editPlaylist(playlist.id, normalizedData);
       console.log('Playlist updated successfully:', updatedPlaylist);
       
-      // Show success message
       setSaveSuccess(true);
       
       // Navigate after a short delay to show the success message
@@ -253,10 +280,15 @@ const EditPlaylistForm = ({ playlist }) => {
   };
 
   const removeTrack = (trackId) => {
-    setPlaylistData(prev => ({
-      ...prev,
-      tracks: prev.tracks.filter(track => track.id !== trackId)
-    }));
+    setPlaylistData(prev => {
+      // Remove the track
+      const updatedTracks = prev.tracks.filter(track => track.id !== trackId);
+      // Re-assign sequential numbers
+      return {
+        ...prev,
+        tracks: assignSequentialNumbers(updatedTracks)
+      };
+    });
   };
 
   const moveTrack = (trackId, direction) => {
@@ -271,13 +303,27 @@ const EditPlaylistForm = ({ playlist }) => {
     const newTracks = [...playlistData.tracks];
     const targetIndex = direction === 'up' ? trackIndex - 1 : trackIndex + 1;
     
+    // Swap the tracks
     [newTracks[trackIndex], newTracks[targetIndex]] = 
     [newTracks[targetIndex], newTracks[trackIndex]];
     
+    // Re-assign sequential numbers
     setPlaylistData(prev => ({
       ...prev,
-      tracks: newTracks
+      tracks: assignSequentialNumbers(newTracks)
     }));
+  };
+
+  // Modified TrackItem component to display playlistNumber in playlist view
+  const PlaylistTrackItem = ({ track, index }) => {
+    return (
+      <div className="track-item">
+        <span className="track-number">{index + 1}.</span>
+        <span className="track-title">{track.title || track.name}</span>
+        <span className="track-duration">{track.duration}</span>
+        {track.originalNumber > 0 }
+      </div>
+    );
   };
 
   // If there's a critical error, just show the error message
@@ -329,7 +375,7 @@ const EditPlaylistForm = ({ playlist }) => {
             <div className="tracks-list">
               {playlistData.tracks.map((track, index) => (
                 <div key={track.id} className="playlist-track-item">
-                  <TrackItem track={track} />
+                  <PlaylistTrackItem track={track} index={index} />
                   <div className="track-actions">
                     <button 
                       type="button" 

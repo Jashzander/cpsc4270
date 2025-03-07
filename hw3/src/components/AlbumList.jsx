@@ -11,6 +11,8 @@ const AlbumList = ({ currentPlaylist }) => {
   const [playlistTracksIds, setPlaylistTracksIds] = useState(new Set());
   const [addingTrack, setAddingTrack] = useState(null);
   const [addError, setAddError] = useState(null);
+  // New state to track if any button has been clicked
+  const [buttonsDisabled, setButtonsDisabled] = useState(false);
 
   // Validate currentPlaylist
   const isValidPlaylist = currentPlaylist && currentPlaylist.id;
@@ -18,6 +20,8 @@ const AlbumList = ({ currentPlaylist }) => {
   // Force reload albums when component mounts
   useEffect(() => {
     loadAlbums();
+    // Reset the buttons disabled state when component mounts
+    setButtonsDisabled(false);
   }, [loadAlbums]);
 
   // Update the set of track IDs when the currentPlaylist changes
@@ -50,6 +54,8 @@ const AlbumList = ({ currentPlaylist }) => {
     
     // Only add if not already in playlist
     if (!playlistTracksIds.has(track.id)) {
+      // Disable all other buttons
+      setButtonsDisabled(true);
       setAddingTrack(track.id);
       
       // Format duration if it's in seconds
@@ -92,7 +98,6 @@ const AlbumList = ({ currentPlaylist }) => {
       // Prepare the updated tracks list for the UI
       const updatedTracks = [...currentPlaylist.tracks, normalizedTrack];
       
-      // Optimistically update the UI
       setPlaylistTracksIds(prev => new Set([...prev, track.id]));
       
       try {
@@ -135,7 +140,6 @@ const AlbumList = ({ currentPlaylist }) => {
         );
         
         if (isServerError) {
-          // For server errors, keep the optimistic update but show a warning
           setAddError(
             'The track was added locally, but there was a server connection issue. ' +
             'Your changes will be saved when the connection is restored.'
@@ -147,7 +151,6 @@ const AlbumList = ({ currentPlaylist }) => {
             tracks: updatedTracks
           }));
         } else {
-          // For other errors, revert the optimistic UI update
           setPlaylistTracksIds(prev => {
             const newSet = new Set([...prev]);
             newSet.delete(track.id);
@@ -155,6 +158,8 @@ const AlbumList = ({ currentPlaylist }) => {
           });
           
           setAddError(`Failed to add track: ${err.message || 'Unknown error'}`);
+          
+          setButtonsDisabled(false);
         }
       } finally {
         setAddingTrack(null);
@@ -170,6 +175,12 @@ const AlbumList = ({ currentPlaylist }) => {
       <h3>Available Albums and Tracks</h3>
       
       {addError && <div className="error">{addError}</div>}
+      
+      {buttonsDisabled && !addError && (
+        <div className="info-message">
+          Track has been added to the playlist. Other add buttons are disabled until you navigate away and return.
+        </div>
+      )}
       
       {albums.length === 0 ? (
         <p>No albums available</p>
@@ -196,7 +207,7 @@ const AlbumList = ({ currentPlaylist }) => {
                           <button 
                             onClick={() => handleAddTrack(track)}
                             className="add-track-btn"
-                            disabled={addingTrack === track.id}
+                            disabled={addingTrack === track.id || buttonsDisabled}
                           >
                             {addingTrack === track.id ? 'Adding...' : 'Add to Playlist'}
                           </button>

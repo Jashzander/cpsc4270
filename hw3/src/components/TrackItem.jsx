@@ -47,7 +47,6 @@ const TrackItem = ({ track }) => {
     return duration || '0:00';
   };
 
-  // Get the best available title and duration
   const displayTitle = track.title || track.name || `Track ${track.id || track._id || ''}`;
   const displayDuration = formatDuration(track.duration);
   const displayNumber = track.number || track.trackNumber || '';

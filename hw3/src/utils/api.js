@@ -6,13 +6,12 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
 const getAuthHeader = () => {
   const token = localStorage.getItem('authToken');
   
-  // In production, we should not use mock tokens
+
   if (import.meta.env.MODE === 'production' && !token) {
     console.error('No auth token found in production mode');
     return {};
   }
-  
-  // For development purposes only, if no token exists, create a mock one
+
   if (!token && import.meta.env.MODE === 'development') {
     console.warn('No auth token found, using mock token for development');
     return { Authorization: 'Bearer mock_token_for_development' };
@@ -264,31 +263,6 @@ export const createPlaylist = async (playlistData) => {
   }
 };
 
-// Add a function to delete a playlist
-export const deletePlaylist = async (playlistId) => {
-  try {
-    if (!playlistId) {
-      throw new Error('Invalid playlist ID for deletion');
-    }
-    
-    console.log('Deleting playlist:', playlistId);
-    
-    await fetchWithAuth(`${API_BASE_URL}/playlists/${playlistId}`, {
-      method: 'DELETE'
-    });
-    
-    console.log('Playlist deleted successfully');
-    
-    // Clear the cache for playlists
-    localStorage.removeItem('cache_/playlists');
-    
-    return true;
-  } catch (error) {
-    console.error('Error deleting playlist:', error);
-    throw error;
-  }
-};
-
 export const updatePlaylist = async (playlistId, playlistData) => {
   let normalizedData = { ...playlistData };
   
@@ -314,29 +288,32 @@ export const updatePlaylist = async (playlistId, playlistData) => {
       body: JSON.stringify(normalizedData.isPublic)
     });
     
-    
-    // Then, handle track updates individually
-    console.log('Updating playlist tracks...');
-    
     // Get the current tracks from the server
     const currentPlaylist = await fetchWithAuth(`${API_BASE_URL}/playlists/${playlistId}`);
     const currentTracks = currentPlaylist.tracks || [];
     
-    // Convert tracks to IDs if they are objects
-    const newTrackIds = normalizedData.tracks.map(track => 
-      typeof track === 'object' ? track.id : track
+    // Convert incoming tracks to consistent format (array of IDs)
+    const normalizedNewTracks = normalizedData.tracks.map(track => 
+      typeof track === 'object' ? track.id || track._id : track
+    );
+    
+    // Convert current tracks to consistent format (array of IDs)
+    const normalizedCurrentTracks = currentTracks.map(track => 
+      typeof track === 'object' ? track.id || track._id : track
     );
     
     // Find tracks to add (in new list but not in current list)
-    const tracksToAdd = newTrackIds.filter(trackId => 
-      !currentTracks.includes(trackId)
+    const tracksToAdd = normalizedNewTracks.filter(trackId => 
+      !normalizedCurrentTracks.includes(trackId)
     );
     
     // Find tracks to remove (in current list but not in new list)
-    const tracksToRemove = currentTracks.filter(trackId => 
-      !newTrackIds.includes(trackId)
+    const tracksToRemove = normalizedCurrentTracks.filter(trackId => 
+      !normalizedNewTracks.includes(trackId)
     );
     
+    console.log('Current tracks:', normalizedCurrentTracks);
+    console.log('New tracks:', normalizedNewTracks);
     console.log('Tracks to add:', tracksToAdd);
     console.log('Tracks to remove:', tracksToRemove);
     
@@ -427,63 +404,7 @@ export const fetchAlbums = async () => {
   }
 };
 
-// Function to fetch recommended tracks by tag
-export const fetchRecommendedTracks = async (tag) => {
-  try {
-    if (!tag) {
-      throw new Error('Tag is required to fetch recommended tracks');
-    }
-    
-    console.log('Fetching recommended tracks for tag:', tag);
-    const tracks = await fetchWithAuth(`${API_BASE_URL}/recommended-tracks?tag=${encodeURIComponent(tag)}`);
-    console.log('Recommended tracks fetched successfully:', tracks);
-    return tracks;
-  } catch (error) {
-    console.error('Error fetching recommended tracks:', error);
-    throw error;
-  }
-};
 
-// Function to add a tag to a track
-export const addTagToTrack = async (trackId, tag) => {
-  try {
-    if (!trackId || !tag) {
-      throw new Error('Track ID and tag are required');
-    }
-    
-    console.log(`Adding tag "${tag}" to track ${trackId}`);
-    const response = await fetchWithAuth(`${API_BASE_URL}/tracks/${trackId}/tags`, {
-      method: 'POST',
-      body: JSON.stringify({ tag })
-    });
-    
-    console.log('Tag added successfully:', response);
-    return response;
-  } catch (error) {
-    console.error('Error adding tag to track:', error);
-    throw error;
-  }
-};
-
-// Function to remove a tag from a track
-export const removeTagFromTrack = async (trackId, tag) => {
-  try {
-    if (!trackId || !tag) {
-      throw new Error('Track ID and tag are required');
-    }
-    
-    console.log(`Removing tag "${tag}" from track ${trackId}`);
-    const response = await fetchWithAuth(`${API_BASE_URL}/tracks/${trackId}/tags/${encodeURIComponent(tag)}`, {
-      method: 'DELETE'
-    });
-    
-    console.log('Tag removed successfully:', response);
-    return response;
-  } catch (error) {
-    console.error('Error removing tag from track:', error);
-    throw error;
-  }
-};
 
 // Auth functions
 export const login = async () => {

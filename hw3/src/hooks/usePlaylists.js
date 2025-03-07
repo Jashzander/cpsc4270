@@ -1,6 +1,6 @@
 // src/hooks/usePlaylists.js
 import { useState, useEffect, useCallback } from 'react';
-import { fetchPlaylists, createPlaylist, updatePlaylist, deletePlaylist } from '../utils/api';
+import { fetchPlaylists, createPlaylist, updatePlaylist} from '../utils/api';
 
 export const usePlaylists = () => {
   const [playlists, setPlaylists] = useState([]);
@@ -205,37 +205,6 @@ export const usePlaylists = () => {
     }
   };
 
-  const removePlaylist = async (id) => {
-    try {
-      if (!id) {
-        throw new Error('Invalid playlist ID for removal');
-      }
-      
-      console.log('Removing playlist in hook:', id);
-      await deletePlaylist(id);
-      
-      // Update local state immediately for better UX
-      setPlaylists(prev => prev.filter(p => p.id !== id && p._id !== id));
-      
-      // Then reload from server to ensure consistency
-      await loadPlaylists();
-      
-      return true;
-    } catch (err) {
-      setError('Failed to remove playlist');
-      console.error('Error in removePlaylist:', err);
-      
-      // For server errors, still update the UI
-      if (err.message && (err.message.includes('500') || err.message.includes('network'))) {
-        console.warn('Server error on delete, updating UI anyway');
-        setPlaylists(prev => prev.filter(p => p.id !== id && p._id !== id));
-        return true;
-      }
-      
-      throw err;
-    }
-  };
-
   return {
     playlists,
     loading,
@@ -243,6 +212,5 @@ export const usePlaylists = () => {
     loadPlaylists,
     addPlaylist,
     editPlaylist,
-    removePlaylist
   };
 };
