@@ -1,0 +1,24 @@
+<header class="app-header">
+  <div class="logo">
+    <a routerLink="/">Pandify</a>
+  </div>
+  <nav>
+    <ul>
+      @if (isAuthenticated) {
+        <li>
+          <button (click)="logout()" class="logout-btn">Logout</button>
+        </li>
+        @if (user) {
+          <li class="user-info">
+            <img [src]="user.picture" alt="User avatar" class="avatar" *ngIf="user.picture">
+            <span>{{ user.name }}</span>
+          </li>
+        }
+      } @else {
+        <li>
+          <button (click)="login()" class="login-btn">Login</button>
+        </li>
+      }
+    </ul>
+  </nav>
+</header>

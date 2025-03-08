@@ -1,0 +1,21 @@
+.playlist-list {
+  margin: 0 auto;
+}
+
+.playlists {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+@media (max-width: 1024px) {
+  .playlists {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .playlists {
+    grid-template-columns: 1fr;
+  }
+}

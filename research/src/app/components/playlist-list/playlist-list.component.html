@@ -1,0 +1,7 @@
+<div class="playlist-list">
+  <div class="playlists">
+    @for (playlist of playlists; track playlist.id) {
+      <app-playlist-item [playlist]="playlist"></app-playlist-item>
+    }
+  </div>
+</div>

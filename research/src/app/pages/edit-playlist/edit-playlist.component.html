@@ -1,0 +1,19 @@
+<div class="edit-playlist-container">
+  <div class="header-section">
+    <h1>Edit Playlist</h1>
+  </div>
+
+  @if (loading) {
+    <app-loading-spinner></app-loading-spinner>
+  } @else if (error) {
+    <div class="message-container">
+      <div class="message-box">
+        <h2>Private Playlist</h2>
+        <p>This playlist is private.</p>
+        <a routerLink="/" class="back-home-btn">Back to Playlists</a>
+      </div>
+    </div>
+  } @else if (playlist) {
+    <app-edit-playlist-form [playlist]="playlist"></app-edit-playlist-form>
+  }
+</div>

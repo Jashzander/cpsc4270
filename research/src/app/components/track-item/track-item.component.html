@@ -1,0 +1,9 @@
+<div class="track-item">
+  <div class="track-info">
+    <div class="track-title">{{ track.title }}</div>
+    <div class="track-details">
+      {{ track.artist }} • {{ track.album }} • {{ formatDuration(track.duration) }}
+    </div>
+  </div>
+  <button class="remove-btn" (click)="removeTrack()">Remove</button>
+</div>

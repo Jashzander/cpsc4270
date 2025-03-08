@@ -1,0 +1,125 @@
+<div class="form-container">
+  @if (loading) {
+    <app-loading-spinner></app-loading-spinner>
+  } @else {
+    @if (error) {
+      <div class="error-message">{{ error }}</div>
+    }
+    @if (warning) {
+      <div class="warning-message">{{ warning }}</div>
+    }
+    @if (saveSuccess) {
+      <div class="success-message">Playlist updated successfully!</div>
+    }
+
+    <form [formGroup]="playlistForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="name">Playlist Name</label>
+        <input
+          type="text"
+          id="name"
+          formControlName="name"
+          placeholder="Enter playlist name"
+          [class.invalid]="name?.invalid && (name?.dirty || name?.touched)"
+        >
+        @if (name?.invalid && (name?.dirty || name?.touched)) {
+          <div class="error-text">
+            @if (name?.errors?.['required']) {
+              Name is required.
+            }
+            @if (name?.errors?.['minlength']) {
+              Name must be at least 3 characters.
+            }
+          </div>
+        }
+      </div>
+
+      <div class="form-group">
+        <label class="checkbox-label">
+          <input type="checkbox" formControlName="isPublic">
+          Make playlist public
+        </label>
+      </div>
+
+      <div class="tracks-section">
+        <h3>Tracks</h3>
+        @if (loadingAlbums) {
+          <app-loading-spinner></app-loading-spinner>
+        } @else {
+          <div class="track-list">
+            @for (track of playlist.tracks; track track.id + '-' + $index; let i = $index) {
+              <div class="track-item">
+                <div class="track-number">{{ i + 1 }}</div>
+                <div class="track-info">
+                  <div class="track-title">{{ track.title }}</div>
+                  <div class="track-meta">
+                    {{ track.artist }} - {{ track.album }}
+                  </div>
+                  <div class="track-duration">{{ formatDuration(track.duration) }}</div>
+                </div>
+                <div class="track-actions">
+                  @if (i > 0) {
+                    <button type="button" class="move-btn" (click)="moveTrack(track.id, 'up')" title="Move Up">↑</button>
+                  }
+                  @if (i < playlist.tracks.length - 1) {
+                    <button type="button" class="move-btn" (click)="moveTrack(track.id, 'down')" title="Move Down">↓</button>
+                  }
+                  <button type="button" class="remove-btn" (click)="removeTrack(track.id)" title="Remove">×</button>
+                </div>
+              </div>
+            }
+          </div>
+
+          <div class="add-tracks-section">
+            <h4>Add Tracks</h4>
+            
+            <div class="album-filter">
+              <label for="album-select">Filter by Album:</label>
+              <select 
+                id="album-select" 
+                (change)="onAlbumSelect($event)"
+                class="album-select"
+              >
+                <option value="">All Albums</option>
+                @for (album of albums; track album.id) {
+                  <option [value]="album.id">{{ album.title }} - {{ album.artist }}</option>
+                }
+              </select>
+            </div>
+            
+            <div class="available-tracks">
+              @if (filteredTracks.length === 0) {
+                <div class="no-tracks-message">No tracks available for this album</div>
+              } @else {
+                @for (track of filteredTracks; track track.id + '-' + $index; let i = $index) {
+                  <div class="available-track-item">
+                    <div class="track-info">
+                      <div class="track-title">{{ track.title }}</div>
+                      <div class="track-meta">
+                        {{ track.artist }} - {{ track.albumName }}
+                      </div>
+                    </div>
+                    @if (isTrackInPlaylist(track.id)) {
+                      <span class="track-added">Added</span>
+                    } @else {
+                      <button type="button" class="add-btn" (click)="addTrack(track)">Add</button>
+                    }
+                  </div>
+                }
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="form-actions">
+        <div class="right-actions">
+          <button type="submit" class="submit-btn" [disabled]="playlistForm.invalid || loading">
+            Save Changes
+          </button>
+          <a routerLink="/" class="cancel-btn">Cancel</a>
+        </div>
+      </div>
+    </form>
+  }
+</div>

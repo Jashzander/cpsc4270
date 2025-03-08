@@ -1,0 +1,14 @@
+<div class="playlist-item">
+  <div class="playlist-info">
+    <h3>{{ playlist.name }}</h3>
+    <p class="playlist-status">
+      {{ playlist.isPublic ? 'Public' : 'Private' }}
+    </p>
+    <p class="playlist-tracks">{{ getTrackCount() }}</p>
+  </div>
+  <div class="playlist-actions">
+    <a class="edit-playlist-btn" [routerLink]="['/playlists', playlist.id, 'edit']">
+      Edit Playlist
+    </a>
+  </div>
+</div>

@@ -1,0 +1,46 @@
+<div class="form-container">
+  @if (loading) {
+    <app-loading-spinner></app-loading-spinner>
+  } @else {
+    @if (error) {
+      <div class="error-message">{{ error }}</div>
+    }
+
+    <form [formGroup]="playlistForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="name">Playlist Name</label>
+        <input
+          type="text"
+          id="name"
+          formControlName="name"
+          placeholder="Enter playlist name"
+          [class.invalid]="name?.invalid && (name?.dirty || name?.touched)"
+        >
+        @if (name?.invalid && (name?.dirty || name?.touched)) {
+          <div class="error-text">
+            @if (name?.errors?.['required']) {
+              Name is required.
+            }
+            @if (name?.errors?.['minlength']) {
+              Name must be at least 3 characters.
+            }
+          </div>
+        }
+      </div>
+
+      <div class="form-group">
+        <label class="checkbox-label">
+          <input type="checkbox" formControlName="isPublic">
+          Make playlist public
+        </label>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="submit-btn" [disabled]="playlistForm.invalid">
+          Create Playlist
+        </button>
+        <a routerLink="/" class="cancel-btn">Cancel</a>
+      </div>
+    </form>
+  }
+</div>

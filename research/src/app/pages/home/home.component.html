@@ -1,0 +1,21 @@
+<div class="home-container">
+  <div class="header-section">
+    <h1>Your Playlists</h1>
+    <a routerLink="/playlists/new" class="new-playlist-btn">Create New Playlist</a>
+  </div>
+
+  @if (loading) {
+    <app-loading-spinner></app-loading-spinner>
+  } @else if (error) {
+    <div class="error-message">
+      {{ error }}
+    </div>
+  } @else if (playlists.length === 0) {
+    <div class="empty-state">
+      <p>You don't have any playlists yet.</p>
+      <a routerLink="/playlists/new" class="create-first-btn">Create your first playlist</a>
+    </div>
+  } @else {
+    <app-playlist-list [playlists]="playlists"></app-playlist-list>
+  }
+</div>

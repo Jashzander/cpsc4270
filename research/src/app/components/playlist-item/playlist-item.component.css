@@ -1,0 +1,75 @@
+.playlist-item {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 1.5rem;
+  height: 100%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.playlist-info {
+  flex-grow: 1;
+}
+
+.playlist-info h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #333;
+  margin-bottom: 0.75rem;
+}
+
+.playlist-status {
+  margin: 0.5rem 0;
+  color: #666;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+}
+
+.playlist-status::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 0.5rem;
+  background-color: #666;
+}
+
+.playlist-status:has(:not(:empty))::before {
+  background-color: #4CAF50;
+}
+
+.playlist-tracks {
+  margin: 0.5rem 0 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.playlist-actions {
+  margin-top: 1.5rem;
+}
+
+.edit-playlist-btn {
+  display: inline-block;
+  width: 100%;
+  background-color: #4CAF50;
+  color: white;
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  text-align: center;
+  transition: background-color 0.2s;
+}
+
+.edit-playlist-btn:hover {
+  background-color: #45a049;
+}
+
+.edit-playlist-btn.disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
