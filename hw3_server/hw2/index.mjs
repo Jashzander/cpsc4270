@@ -23,7 +23,7 @@ app.use(cookieParser())
 
 // Configure CORS for API access
 app.use(cors({
-  origin: 'http://localhost:5173', // React app origin
+  origin: ["http://localhost:5173", "http://localhost:4200"], // React app origin
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Authorization', 'Content-Type'],
   credentials: true
@@ -113,7 +113,7 @@ app.use('/albums', proxy('http://localhost:3001', {
 }))
 
 // Proxy to React dev server
-app.use('/', proxy('http://localhost:5173', {
+app.use('/', proxy('http://localhost:4200', {
   proxyReqPathResolver: function (req) {
     return req.url
   }
